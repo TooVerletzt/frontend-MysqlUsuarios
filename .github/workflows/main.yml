@@ -1,41 +1,40 @@
-name: CI/CD deploy frontend-celulares-mysql
+name: CI/CD deploy frontend-usuarios-mysql
 
 on: 
   push:
     branches: [ "master" ]  
 
 jobs:
-  ci_cd_deploy_frontend_celulares_mysql:
+  ci_cd_deploy_frontend_usuarios_mysql:
     runs-on: ubuntu-latest
 
     steps:
       - run: ls -la
       - uses: actions/checkout@v2
       - run: ls -la
-      - run: echo 'hello frontend-mysql'
+      - run: echo 'hello frontend-usuarios-mysql'
 
       - name: download, run httpd image
         run: |
-          docker run -d --name frontend-mysql httpd
+          docker run -d --name frontend-usuarios-mysql httpd
 
       - name: docker ps
         run: |
           docker ps
 
-      - name: cp frontendMysql content to container
+      - name: cp frontend content to container
         run: |
-          docker cp frontendMysql/. frontend-mysql:/usr/local/apache2/htdocs
+          docker cp . frontend-usuarios-mysql:/usr/local/apache2/htdocs
 
       - name: list container contents
         run: |
-          docker exec frontend-mysql ls -la /usr/local/apache2/htdocs
+          docker exec frontend-usuarios-mysql ls -la /usr/local/apache2/htdocs
 
       - name: build custom docker image
-        run: docker commit --change "ENV MODEL_NAME ${{ secrets.MODEL_NAME }}" frontend-mysql ${{ secrets.DOCKER_USER}}/${{ secrets.MODEL_NAME }}:${{ github.sha }}
+        run: docker commit --change "ENV MODEL_NAME ${{ secrets.MODEL_NAME }}" frontend-usuarios-mysql ${{ secrets.DOCKER_USER }}/${{ secrets.MODEL_NAME }}:${{ github.sha }}
 
       - name: list images
-        run: |
-          docker images
+        run: docker images
 
       - name: docker login
         env:
@@ -44,5 +43,4 @@ jobs:
         run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
       - name: docker push
-        run: docker push ${{ secrets.DOCKER_USER }}/${{ secrets.MODEL_NAME }}:${{ github.sha }}
-
+        run: docker push ${{ secrets.DOCKER
